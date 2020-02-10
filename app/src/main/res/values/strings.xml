@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">RickAndMortyApp</string>
+    <string name="msg_fav_delete_title">Delete</string>
+    <string name="msg_fav_delete_message">Do you want to remove \'%s\' from the favorites?</string>
+    <string name="msg_fav_delete_confirm">Yep!</string>
+    <string name="msg_fav_delete_cancel">Nope!</string>
+    <string name="characters_info_year_pages">Year: %1$d - Pages: %2$d</string>
+    <string name="msg_characters_list_empty">The character\'s list is empty!</string>
+    <string name="tab_characters">Characters</string>
+    <string name="tab_favorites">Favorites</string>
+    <string name="msg_loading">Loading characters…</string>
+    <string name="msg_added_favorites">\'%s\' added to favorites!</string>
 </resources>

@@ -1,4 +1,4 @@
-package br.com.pixelwolf.rickandmorty
+package br.com.pixelwolf.rickandmorty.http
 
 import br.com.pixelwolf.rickandmorty.http.Character
 import br.com.pixelwolf.rickandmorty.http.RetrofitFactory
