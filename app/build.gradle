@@ -39,10 +39,12 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.2.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.ui:ui-framework:0.1.0-dev02'
-    implementation 'androidx.ui:ui-layout:0.1.0-dev02'
-    implementation 'androidx.ui:ui-material:0.1.0-dev02'
-    implementation 'androidx.ui:ui-tooling:0.1.0-dev02'
+
+    def ui_version = '0.1.0-dev04'
+    implementation "androidx.ui:ui-framework:$ui_version"
+    implementation "androidx.ui:ui-layout:$ui_version"
+    implementation "androidx.ui:ui-material:$ui_version"
+    implementation "androidx.ui:ui-tooling:$ui_version"
 
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0'
     implementation 'com.squareup.picasso:picasso:2.71828'

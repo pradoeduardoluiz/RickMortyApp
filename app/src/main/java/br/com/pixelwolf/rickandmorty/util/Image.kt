@@ -7,8 +7,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.Composable
 import androidx.compose.onCommit
 import androidx.compose.state
-import androidx.compose.unaryPlus
-import androidx.ui.core.Dp
 import androidx.ui.core.Draw
 import androidx.ui.foundation.DrawImage
 import androidx.ui.graphics.Image
@@ -17,14 +15,15 @@ import androidx.ui.graphics.NativeImage
 import androidx.ui.graphics.colorspace.ColorSpace
 import androidx.ui.graphics.colorspace.ColorSpaces
 import androidx.ui.layout.Container
+import androidx.ui.unit.Dp
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 
 @Composable
 fun Image(url: String, width: Dp, height: Dp) {
-    var image by +state<Image?> { null }
-    var drawable by +state<Drawable?> { null }
-    +onCommit(url) {
+    var image by state<Image?> { null }
+    var drawable by state<Drawable?> { null }
+    onCommit(url) {
         val picasso = Picasso.get()
         val target = object : Target {
             override fun onPrepareLoad(placeHolderDrawable: Drawable?) {

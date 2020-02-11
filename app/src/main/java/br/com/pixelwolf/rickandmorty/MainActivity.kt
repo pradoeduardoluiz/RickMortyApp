@@ -4,9 +4,15 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.*
+import androidx.compose.Composable
+import androidx.compose.Context
+import androidx.compose.ambient
+import androidx.compose.state
 import androidx.lifecycle.lifecycleScope
-import androidx.ui.core.*
+import androidx.ui.core.Alignment
+import androidx.ui.core.ContextAmbient
+import androidx.ui.core.Text
+import androidx.ui.core.setContent
 import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.shape.DrawShape
@@ -19,14 +25,16 @@ import androidx.ui.material.*
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Card
 import androidx.ui.res.vectorResource
+import androidx.ui.text.TextStyle
+import androidx.ui.text.font.FontFamily
+import androidx.ui.text.font.FontWeight
+import androidx.ui.unit.dp
+import androidx.ui.unit.sp
 import br.com.pixelwolf.rickandmorty.http.Character
-import br.com.pixelwolf.rickandmorty.http.Remote
 import br.com.pixelwolf.rickandmorty.model.CharactersScreenState
 import br.com.pixelwolf.rickandmorty.model.ListCharactersResult
 import br.com.pixelwolf.rickandmorty.util.Image
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,34 +42,28 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
-            MaterialTheme(colors = MaterialColors(primary = Color.Green)) {
+            MaterialTheme() {
                 RickMortyScreen(result = charactersResult)
             }
         }
 
-        lifecycleScope.launch {
-            charactersResult.loading = true
-            val characters = withContext(Dispatchers.IO) {
-                Remote.getCharacters()
-            }
-            charactersResult.characters = characters ?: emptyList()
-            charactersResult.loading = false
-        }
+        lifecycleScope.launch { charactersResult.fetchCharacters() }
     }
 }
 
 @Composable
 fun RickMortyScreen(result: ListCharactersResult) {
 
-    val context = +ambient(ContextAmbient)
+    val context = ambient(ContextAmbient)
     val resources = context.resources
     if (result.loading) {
         Loading(resources)
         return
     }
 
-    val screenState by +state {
+    val screenState by state {
         CharactersScreenState(0, false, null)
     }
 
@@ -90,7 +92,7 @@ fun Loading(resources: Resources) {
     Container(alignment = Alignment.Center, expanded = true) {
         Text(
             resources.getString(R.string.msg_loading),
-            style = +themeTextStyle { h6 }
+            style = h6
         )
     }
 }
@@ -139,6 +141,18 @@ fun CharactersScreenContent(
     BottomRightFab()
 }
 
+val h6: TextStyle = TextStyle(
+    fontFamily = FontFamily("Roboto"),
+    fontWeight = FontWeight.W500,
+    fontSize = 20.sp
+)
+
+val body2: TextStyle = TextStyle(
+    fontFamily = FontFamily("Roboto"),
+    fontWeight = FontWeight.Normal,
+    fontSize = 14.sp
+)
+
 @Composable
 fun DeleteFavCharacterDialog(
     resources: Resources,
@@ -153,7 +167,7 @@ fun DeleteFavCharacterDialog(
                 text = resources.getString(
                     R.string.msg_fav_delete_title
                 ),
-                style = +themeTextStyle { h6 }
+                style = h6
             )
         },
         text = {
@@ -161,7 +175,7 @@ fun DeleteFavCharacterDialog(
                 text = resources.getString(
                     R.string.msg_fav_delete_message, character.name
                 ),
-                style = +themeTextStyle { body2 }
+                style = body2
             )
         },
         confirmButton = {
@@ -222,7 +236,7 @@ fun CharactersList(
         Container(expanded = true, alignment = Alignment.Center) {
             Text(
                 resources.getString(R.string.msg_characters_list_empty),
-                style = +themeTextStyle { h6 }
+                style = h6
             )
         }
         return
@@ -245,7 +259,7 @@ fun CharacterItem(
     action: (Character) -> Unit
 ) {
     Container(
-        modifier = Spacing(top = 16.dp, left = 16.dp, right = 16.dp)
+        modifier = LayoutPadding(top = 16.dp, left = 16.dp, right = 16.dp)
     ) {
         Card(shape = RoundedCornerShape(4.dp)) {
             Ripple(bounded = true) {
@@ -264,22 +278,18 @@ fun CharacterItemContent(
     resources: Resources,
     character: Character
 ) {
-    Row(mainAxisSize = LayoutSize.Expand) {
+    Row {
         Image(url = character.image, width = 96.dp, height = 144.dp)
         Column(
-            modifier = Spacing(16.dp),
-            mainAxisSize = LayoutSize.Expand,
-            crossAxisSize = LayoutSize.Expand
+            modifier = LayoutPadding(16.dp)
         ) {
             Text(
                 text = character.name,
-                style = (+themeTextStyle { h6 })
-                    .withOpacity(0.87f)
+                style = h6
             )
             Text(
                 text = character.species,
-                style = (+themeTextStyle { body2 })
-                    .withOpacity(0.87f)
+                style = body2
             )
         }
     }
@@ -300,7 +310,7 @@ fun BottomRightFab() {
         ) {
             Container(width = 24.dp, height = 24.dp) {
                 DrawVector(
-                    +vectorResource(R.drawable.ic_baseline_add_24)
+                    vectorResource(R.drawable.ic_baseline_add_24)
                 )
             }
         }
